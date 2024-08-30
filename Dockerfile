@@ -1,9 +1,13 @@
-FROM golang:1.20-alpine
+FROM golang:1.20-alpine AS builder
 
 WORKDIR /app
 
-COPY main.go .
+COPY . .
 
 RUN go build -o hello-world main.go
 
-CMD ["./hello-world"]
+FROM scratch
+
+COPY --from=builder /app/hello-world /hello-world
+
+ENTRYPOINT ["/hello-world"]
